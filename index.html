@@ -2,80 +2,132 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Mapa Mental GoJS</title>
+  <title>Mapa Mental Interactivo</title>
 
-  <!-- Vincular CSS -->
   <link rel="stylesheet" href="style.css">
-
-  <!-- Librería GoJS -->
   <script src="https://unpkg.com/gojs/release/go.js"></script>
 </head>
 
 <body>
 
+<header>
   <h1>Modelo Mental vs Modelo Conceptual</h1>
+  <p>Interacción Hombre - Máquina</p>
+</header>
 
-  <div id="myDiagramDiv"></div>
+<section class="controls">
+  <button onclick="cargarMental()">Modelo Mental</button>
+  <button onclick="cargarConceptual()">Modelo Conceptual</button>
+</section>
 
-  <script>
-    const $ = go.GraphObject.make;
+<section id="myDiagramDiv"></section>
 
-    const myDiagram = $(go.Diagram, "myDiagramDiv", {
-      "undoManager.isEnabled": true,
-      layout: $(go.TreeLayout, {
-        angle: 90,
-        layerSpacing: 35
-      })
-    });
+<footer>
+  <p>Práctica GoJS - Curso UX</p>
+</footer>
 
-    // 🎨 Diseño de nodos
-    myDiagram.nodeTemplate =
-      $(go.Node, "Auto",
-        $(go.Shape, "RoundedRectangle",
-          new go.Binding("fill", "color"),
-          { strokeWidth: 0 }),
-        $(go.TextBlock,
-          { margin: 8, font: "bold 12px sans-serif" },
-          new go.Binding("text", "key"))
-      );
+<script>
+  const $ = go.GraphObject.make;
 
-    // 🔗 Diseño de enlaces
-    myDiagram.linkTemplate =
-      $(go.Link,
-        { routing: go.Link.Orthogonal, corner: 5 },
-        $(go.Shape),
-        $(go.Shape, { toArrow: "Standard" })
-      );
+  // =========================
+  // CONFIGURACIÓN DIAGRAMA
+  // =========================
+  const myDiagram = $(go.Diagram, "myDiagramDiv", {
+    initialAutoScale: go.Diagram.Uniform,
+    layout: $(go.TreeLayout, {
+      angle: 90,
+      layerSpacing: 50,
+      nodeSpacing: 30
+    }),
+    "undoManager.isEnabled": true
+  });
 
-    // 🧠 MODELO MENTAL
-    const userMentalModel = [
-      { key: "Encender computadora", parent: "Usuario", color: "#A3E4D7" },
-      { key: "Abrir programa", parent: "Usuario", color: "#A3E4D7" },
-      { key: "Realizar tarea", parent: "Usuario", color: "#A3E4D7" }
-    ];
+  // =========================
+  // DISEÑO DE NODOS
+  // =========================
+  myDiagram.nodeTemplate =
+    $(go.Node, "Auto",
+      { width: 200 },
 
-    // ⚙️ MODELO CONCEPTUAL
-    const systemConceptualModel = [
-      { key: "Sistema operativo inicia", parent: "Sistema", color: "#F9E79F" },
-      { key: "Carga en memoria RAM", parent: "Sistema", color: "#F9E79F" },
-      { key: "Ejecución de procesos", parent: "Sistema", color: "#F9E79F" }
-    ];
+      $(go.Shape, "RoundedRectangle",
+        {
+          strokeWidth: 0,
+          portId: "",
+          fromLinkable: true,
+          toLinkable: true
+        },
+        new go.Binding("fill", "color")
+      ),
 
-    // 🌳 Estructura principal
-    const root = [
-      { key: "Sistema vs Usuario", color: "#AED6F1" },
-      { key: "Usuario", parent: "Sistema vs Usuario", color: "#76D7C4" },
-      { key: "Sistema", parent: "Sistema vs Usuario", color: "#F7DC6F" }
-    ];
+      $(go.TextBlock,
+        {
+          margin: 10,
+          stroke: "white",
+          font: "bold 13px sans-serif",
+          wrap: go.TextBlock.WrapFit,
+          textAlign: "center"
+        },
+        new go.Binding("text", "key")
+      )
+    );
 
-    // 📊 Modelo final
-    myDiagram.model = new go.TreeModel([
-      ...root,
-      ...userMentalModel,
-      ...systemConceptualModel
-    ]);
+  // =========================
+  // DISEÑO DE ENLACES
+  // =========================
+  myDiagram.linkTemplate =
+    $(go.Link,
+      {
+        routing: go.Link.Orthogonal,
+        corner: 10
+      },
+      $(go.Shape, { strokeWidth: 2, stroke: "#888" }),
+      $(go.Shape, { toArrow: "Standard", fill: "#888", stroke: null })
+    );
 
-  </script>
+  // =========================
+  // MODELO MENTAL (Usuario)
+  // =========================
+  const modeloMental = [
+    { key: "App Bancaria", color: "#5DADE2" },
+
+    { key: "Abrir aplicación", parent: "App Bancaria", color: "#48C9B0" },
+    { key: "Ingresar usuario", parent: "Abrir aplicación", color: "#48C9B0" },
+    { key: "Ver saldo", parent: "Ingresar usuario", color: "#48C9B0" },
+    { key: "Seleccionar acción", parent: "Ver saldo", color: "#48C9B0" },
+    { key: "Transferir / Pagar", parent: "Seleccionar acción", color: "#48C9B0" },
+    { key: "Confirmar operación", parent: "Transferir / Pagar", color: "#48C9B0" }
+  ];
+
+  // =========================
+  // MODELO CONCEPTUAL (Sistema)
+  // =========================
+  const modeloConceptual = [
+    { key: "Sistema Bancario", color: "#F5B041" },
+
+    { key: "Autenticación", parent: "Sistema Bancario", color: "#F7DC6F" },
+    { key: "Validación de credenciales", parent: "Autenticación", color: "#F7DC6F" },
+    { key: "Consulta base de datos", parent: "Validación de credenciales", color: "#F7DC6F" },
+    { key: "Obtención de saldo", parent: "Consulta base de datos", color: "#F7DC6F" },
+    { key: "Procesamiento de transacción", parent: "Obtención de saldo", color: "#F7DC6F" },
+    { key: "Conexión con banco destino", parent: "Procesamiento de transacción", color: "#F7DC6F" },
+    { key: "Confirmación del sistema", parent: "Conexión con banco destino", color: "#F7DC6F" }
+  ];
+
+  // =========================
+  // FUNCIONES DE CAMBIO
+  // =========================
+  function cargarMental() {
+    myDiagram.model = new go.TreeModel(modeloMental);
+  }
+
+  function cargarConceptual() {
+    myDiagram.model = new go.TreeModel(modeloConceptual);
+  }
+
+  // Carga inicial
+  cargarMental();
+
+</script>
 
 </body>
 </html>
