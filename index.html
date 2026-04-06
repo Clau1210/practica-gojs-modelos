@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mapa Mental con GoJS</title>
+
+  <!-- Librería GoJS -->
+  <script src="https://unpkg.com/gojs/release/go.js"></script>
+
+</head>
+
+<body>
+
+<h2>Modelo Mental vs Modelo Conceptual</h2>
+
+<div id="myDiagramDiv"></div>
+
+<script>
+  const $ = go.GraphObject.make;
+
+  const myDiagram = $(go.Diagram, "myDiagramDiv", {
+    "undoManager.isEnabled": true
+  });
+
+  // Diseño de nodos
+  myDiagram.nodeTemplate =
+    $(go.Node, "Auto",
+      $(go.Shape, "RoundedRectangle",
+        { fill: "lightgray", strokeWidth: 0 }),
+      $(go.TextBlock,
+        { margin: 8 },
+        new go.Binding("text", "key"))
+    );
+
+  // Diseño de enlaces
+  myDiagram.linkTemplate =
+    $(go.Link,
+      $(go.Shape),
+      $(go.Shape, { toArrow: "Standard" })
+    );
+
+  // 📌 MODELO MENTAL (ejemplo simple)
+  const userMentalModel = [
+    { key: "Encender computadora", parent: "Usuario" },
+    { key: "Abrir programa", parent: "Usuario" },
+    { key: "Realizar tarea", parent: "Usuario" }
+  ];
+
+  // 📌 MODELO CONCEPTUAL (lo que realmente pasa)
+  const systemConceptualModel = [
+    { key: "Sistema operativo inicia", parent: "Sistema" },
+    { key: "Carga de memoria RAM", parent: "Sistema" },
+    { key: "Ejecución de procesos", parent: "Sistema" }
+  ];
+
+  // Nodo raíz
+  const root = [
+    { key: "Sistema vs Usuario" },
+    { key: "Usuario", parent: "Sistema vs Usuario" },
+    { key: "Sistema", parent: "Sistema vs Usuario" }
+  ];
+
+  // Modelo completo
+  myDiagram.model = new go.TreeModel([
+    ...root,
+    ...userMentalModel,
+    ...systemConceptualModel
+  ]);
+
+</script>
+
+</body>
+</html>
