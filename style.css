@@ -1,18 +1,54 @@
 body {
+  margin: 0;
   font-family: Arial, sans-serif;
+  background: #f4f6f7;
+}
+
+/* HEADER */
+header {
+  background: linear-gradient(90deg, #2E86C1, #5DADE2);
+  color: white;
+  padding: 20px;
   text-align: center;
-  background-color: #f4f6f7;
 }
 
-h1 {
-  margin-top: 20px;
+/* BOTONES */
+.controls {
+  text-align: center;
+  margin: 20px;
 }
 
+button {
+  padding: 12px 18px;
+  margin: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #3498DB;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #21618C;
+}
+
+/* DIAGRAMA */
 #myDiagramDiv {
   width: 90%;
   height: 600px;
-  margin: 20px auto;
+  margin: auto;
+  background: white;
+  border-radius: 12px;
   border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: white;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 10px;
+  margin-top: 20px;
+  font-size: 12px;
+  color: #777;
 }
