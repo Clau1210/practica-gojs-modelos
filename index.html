@@ -2,72 +2,80 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Mapa Mental con GoJS</title>
+  <title>Mapa Mental GoJS</title>
+
+  <!-- Vincular CSS -->
+  <link rel="stylesheet" href="style.css">
 
   <!-- Librería GoJS -->
   <script src="https://unpkg.com/gojs/release/go.js"></script>
-
 </head>
 
 <body>
 
-<h2>Modelo Mental vs Modelo Conceptual</h2>
+  <h1>Modelo Mental vs Modelo Conceptual</h1>
 
-<div id="myDiagramDiv"></div>
+  <div id="myDiagramDiv"></div>
 
-<script>
-  const $ = go.GraphObject.make;
+  <script>
+    const $ = go.GraphObject.make;
 
-  const myDiagram = $(go.Diagram, "myDiagramDiv", {
-    "undoManager.isEnabled": true
-  });
+    const myDiagram = $(go.Diagram, "myDiagramDiv", {
+      "undoManager.isEnabled": true,
+      layout: $(go.TreeLayout, {
+        angle: 90,
+        layerSpacing: 35
+      })
+    });
 
-  // Diseño de nodos
-  myDiagram.nodeTemplate =
-    $(go.Node, "Auto",
-      $(go.Shape, "RoundedRectangle",
-        { fill: "lightgray", strokeWidth: 0 }),
-      $(go.TextBlock,
-        { margin: 8 },
-        new go.Binding("text", "key"))
-    );
+    // 🎨 Diseño de nodos
+    myDiagram.nodeTemplate =
+      $(go.Node, "Auto",
+        $(go.Shape, "RoundedRectangle",
+          new go.Binding("fill", "color"),
+          { strokeWidth: 0 }),
+        $(go.TextBlock,
+          { margin: 8, font: "bold 12px sans-serif" },
+          new go.Binding("text", "key"))
+      );
 
-  // Diseño de enlaces
-  myDiagram.linkTemplate =
-    $(go.Link,
-      $(go.Shape),
-      $(go.Shape, { toArrow: "Standard" })
-    );
+    // 🔗 Diseño de enlaces
+    myDiagram.linkTemplate =
+      $(go.Link,
+        { routing: go.Link.Orthogonal, corner: 5 },
+        $(go.Shape),
+        $(go.Shape, { toArrow: "Standard" })
+      );
 
-  // 📌 MODELO MENTAL (ejemplo simple)
-  const userMentalModel = [
-    { key: "Encender computadora", parent: "Usuario" },
-    { key: "Abrir programa", parent: "Usuario" },
-    { key: "Realizar tarea", parent: "Usuario" }
-  ];
+    // 🧠 MODELO MENTAL
+    const userMentalModel = [
+      { key: "Encender computadora", parent: "Usuario", color: "#A3E4D7" },
+      { key: "Abrir programa", parent: "Usuario", color: "#A3E4D7" },
+      { key: "Realizar tarea", parent: "Usuario", color: "#A3E4D7" }
+    ];
 
-  // 📌 MODELO CONCEPTUAL (lo que realmente pasa)
-  const systemConceptualModel = [
-    { key: "Sistema operativo inicia", parent: "Sistema" },
-    { key: "Carga de memoria RAM", parent: "Sistema" },
-    { key: "Ejecución de procesos", parent: "Sistema" }
-  ];
+    // ⚙️ MODELO CONCEPTUAL
+    const systemConceptualModel = [
+      { key: "Sistema operativo inicia", parent: "Sistema", color: "#F9E79F" },
+      { key: "Carga en memoria RAM", parent: "Sistema", color: "#F9E79F" },
+      { key: "Ejecución de procesos", parent: "Sistema", color: "#F9E79F" }
+    ];
 
-  // Nodo raíz
-  const root = [
-    { key: "Sistema vs Usuario" },
-    { key: "Usuario", parent: "Sistema vs Usuario" },
-    { key: "Sistema", parent: "Sistema vs Usuario" }
-  ];
+    // 🌳 Estructura principal
+    const root = [
+      { key: "Sistema vs Usuario", color: "#AED6F1" },
+      { key: "Usuario", parent: "Sistema vs Usuario", color: "#76D7C4" },
+      { key: "Sistema", parent: "Sistema vs Usuario", color: "#F7DC6F" }
+    ];
 
-  // Modelo completo
-  myDiagram.model = new go.TreeModel([
-    ...root,
-    ...userMentalModel,
-    ...systemConceptualModel
-  ]);
+    // 📊 Modelo final
+    myDiagram.model = new go.TreeModel([
+      ...root,
+      ...userMentalModel,
+      ...systemConceptualModel
+    ]);
 
-</script>
+  </script>
 
 </body>
 </html>
